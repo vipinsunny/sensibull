@@ -1,10 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const orderController = require("../controllers/orderController");
+const path = require("path");
 
+const {
+  placeOrderSensibull,
+  modifyOrderSensibull,
+  cancelOrderSensibull,
+  getOrderStatusForIds,
+} = require("../controllers/orderController");
 
-router.post("/place", orderController.placeOrderSensibull);
-router.put("/:orderId", orderController.modifyOrderSensibull);
-router.delete("/:orderId", orderController.cancelOrderSensibull);
+router.route("/place").post(placeOrderSensibull);
+router.route("/:orderId").post(modifyOrderSensibull);
+router.route("/:orderId").post(cancelOrderSensibull);
+router.route("/status-for-ids").post(getOrderStatusForIds);
 
-router.post("status-for-ids", orderController.getOrderStatusForIds);

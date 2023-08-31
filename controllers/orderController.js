@@ -2,9 +2,9 @@ const Order = require("../models/Order");
 const axios = require("axios");
 const OrderSensibull = require("../models/OrderSensibull");
 // const config = require('../config/config.env'); // Assuming you have your configuration in a separate file
-const sensibullApiUrl = "https://prototype.sbulltech.com/api/order/place";
+const catchAsyncError = require("../middlewares/catchAsyncError");
 
-exports.placeOrder = async (req, res) => {
+exports.placeOrder = catchAsyncError(async (req, res) => {
   try {
     const { symbol, quantity } = req.body;
 
@@ -27,9 +27,9 @@ exports.placeOrder = async (req, res) => {
       error: "Failed to place order",
     });
   }
-};
+});
 
-exports.modifyOrder = async (req, res) => {
+exports.modifyOrder = catchAsyncError (async (req, res) => {
   try {
     const { identifier, new_quantity } = req.body;
 
@@ -51,10 +51,10 @@ exports.modifyOrder = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Failed to modify order" });
   }
-};
+});
 
 // Cancel Order
-exports.cancelOrder = async (req, res) => {
+exports.cancelOrder =catchAsyncError(async (req, res) => {
   try {
     const { identifier } = req.body;
 
@@ -76,9 +76,9 @@ exports.cancelOrder = async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Failed to cancel order" });
   }
-};
+});
 
-exports.getOrderStatus = async (req, res) => {
+exports.getOrderStatus =catchAsyncError (async (req, res) => {
   try {
     const { identifier } = req.body;
 
@@ -103,10 +103,10 @@ exports.getOrderStatus = async (req, res) => {
       message: "Failed to get order status",
     });
   }
-};
+});
 
 // Place Order (Sensibull)
-exports.placeOrderSensibull = async (req, res) => {
+exports.placeOrderSensibull = catchAsyncError (async (req, res) => {
   const { symbol, quantity, order_tag } = req.body;
 
   try {
@@ -120,7 +120,7 @@ exports.placeOrderSensibull = async (req, res) => {
       },
       {
         headers: {
-          "X-AUTH-TOKEN": "asdfghjklzxcvbnm",
+          "X-AUTH-TOKEN": process.env.X_AUTH_TOKEN,
         },
       }
     );
@@ -150,23 +150,23 @@ exports.placeOrderSensibull = async (req, res) => {
       err_msg: "some error occured",
     });
   }
-};
+});
 
-exports.modifyOrderSensibull = async (req, res) => {
+exports.modifyOrderSensibull = catchAsyncError (async (req, res) => {
   const orderId = req.params.orderId; // Get the order ID from the URL
-  const { quantity } = req.body; // Get the new quantity from the request body
+  const { request_quantity } = req.body; // Get the new quantity from the request body
   console.log(quantity);
   console.log(orderId);
   try {
     // Make API call to Sensibull
     const sensibullResponse = await axios.put(
-      `https://prototype.sbulltech.com/api/order/{orderId}`,
+      `https://prototype.sbulltech.com/api/order/${orderId}`,
       {
-        quantity,
+        request_quantity,
       },
       {
         headers: {
-          "X-AUTH-TOKEN": "asdfghjklzxcvbnm",
+          "X-AUTH-TOKEN": process.env.X_AUTH_TOKEN,
         },
       }
     );
@@ -193,18 +193,18 @@ exports.modifyOrderSensibull = async (req, res) => {
       err_msg: "some error occured",
     });
   }
-};
+});
 
-exports.cancelOrderSensibull = async (req, res) => {
+exports.cancelOrderSensibull = catchAsyncError (async (req, res) => {
   const { orderId } = req.params;
 
   try {
     // Make API call to Sensibull
     const sensibullResponse = await axios.delete(
-      "https://prototype.sbulltech.com/api/order/${orderId}",
+      `https://prototype.sbulltech.com/api/order/${orderId}`,
       {
         headers: {
-          "X-AUTH-TOKEN": "asdfghjklzxcvbnm",
+          "X-AUTH-TOKEN": process.env.X_AUTH_TOKEN,
         },
       }
     );
@@ -237,10 +237,10 @@ exports.cancelOrderSensibull = async (req, res) => {
       err_msg: "some error occured",
     });
   }
-};
+});
 
 
-exports.getOrderStatusForIds = async (req, res) => {
+exports.getOrderStatusForIds = catchAsyncError (async (req, res) => {
   const { order_ids } = req.body;
 
   try {
@@ -252,7 +252,7 @@ exports.getOrderStatusForIds = async (req, res) => {
       },
       {
         headers: {
-          "X-AUTH-TOKEN": "asdfghjklzxcvbnm",
+          "X-AUTH-TOKEN": process.env.X_AUTH_TOKEN,
         },
       }
     );
@@ -269,4 +269,4 @@ exports.getOrderStatusForIds = async (req, res) => {
       err_msg: "some error occured",
     });
   }
-};
+});
