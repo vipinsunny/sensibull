@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const sensibullOrderSchema = new mongoose.Schema({
+const sensibullorderSchema = new mongoose.Schema({
   order_id: {
     type: String,
     required: true,
@@ -29,4 +29,6 @@ const sensibullOrderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("SensibullOrder", sensibullOrderSchema);
+const Sensibullorder = mongoose.model("Sensibullorder", sensibullorderSchema);
+
+module.exports = Sensibullorder;

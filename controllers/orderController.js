@@ -1,7 +1,6 @@
 const Order = require("../models/Order");
 const axios = require("axios");
-const OrderSensibull = require("../models/OrderSensibull");
-// const config = require('../config/config.env'); // Assuming you have your configuration in a separate file
+const Sensibullorder = require("../models/OrderSensibull");
 const catchAsyncError = require("../middlewares/catchAsyncError");
 
 exports.placeOrder = catchAsyncError(async (req, res) => {
@@ -58,7 +57,6 @@ exports.cancelOrder =catchAsyncError(async (req, res) => {
   try {
     const { identifier } = req.body;
 
-    // Find the order by identifier and update its status to "cancel"
     const canceledOrder = await Order.findOneAndUpdate(
       { identifier },
       { order_status: "cancel" },
@@ -128,7 +126,7 @@ exports.placeOrderSensibull = catchAsyncError (async (req, res) => {
     const sensibullOrderData = sensibullResponse.data.payload.order;
 
     // Create a local order record
-    const order = await OrderSensibull.create({
+    const order = await Sensibullorder.create({
       order_id: sensibullOrderData.order_id,
       order_tag: sensibullOrderData.order_tag,
       symbol: sensibullOrderData.symbol,

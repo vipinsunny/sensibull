@@ -16,9 +16,6 @@ app.use(bodyParser.json());
 
 app.use(errorMiddleware);
 
-
-
 app.use("/api/v1", orderRoutes);
-// app.use("/api/order", orderSensibullRoutes);
 
 module.exports = app;
